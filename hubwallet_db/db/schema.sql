@@ -25,3 +25,4 @@ CREATE TABLE coins (
 -- seeding dummy data
 INSERT INTO users (id, email, password_digest, created_at, updated_at) VALUES (1, 'glenn@glenn.com', 'gmoney92', 1234, 1243);
 INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'EOS', 'eos', 358.28, 31.27, '01/01/2018');
+INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'Bitcoin', 'bitcoin', 10000, 0.8, '01/01/2018');

@@ -33,8 +33,9 @@ const Coins = require('../models/coins')
 router.get('/coins',
     // auth.authCheck, // restrict this route to logged in users
     Coins.findAllForUser,
+    Coins.getPerformanceData,
     (req, res) => {
-        res.json(res.locals.savedCoinData);
+        res.json({ savedCoins: res.locals.savedCoinData, currentData: res.locals.currentCoinData});
     });
 
 	
