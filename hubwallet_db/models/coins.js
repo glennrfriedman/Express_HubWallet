@@ -30,6 +30,17 @@ Coins.findAllForUser = (req, res, next) => {
 		}).catch(err => console.log('ERROR IN Coins.findAll:', err))
 },
 
+Coins.destroy = (req, res, next) => {
+	const coin_id = req.params.coin_id;
+    db.none(
+        'DELETE FROM coins WHERE id = $1', [coin_id])
+    			.then(() => {
+        		next();
+        	}).catch(err => {
+        console.log('ERROR IN Coins.destroy', err);
+    })
+}
+
 Coins.getMarketData = (req, res, next) => {
 	// this will need to be axios.all call
 	// create a promise for each coin a user has saved 
