@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.17.1",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "mustache-express": "^1.2.5"
+    "express-jwt": "^5.3.0",
+    "jwks-rsa": "^1.2.1",
+    "mustache-express": "^1.2.5",
+    "pg-promise": "^7.3.3"
   },
   "devDependencies": {},
   "scripts": {

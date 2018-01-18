@@ -10,6 +10,8 @@ CREATE TABLE users (
 	updated_at integer 
 );
 
+-- coin data to be saved, only need a few pieces of information - rest like live pricing and performance 
+-- metrics to be calculated in middelware sent to front-end 
 CREATE TABLE coins (
 	id SERIAL PRIMARY KEY,
   user_id integer REFERENCES users(id),

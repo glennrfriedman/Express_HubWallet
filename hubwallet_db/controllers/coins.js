@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const auth = require('../services/auth');
-
+// const auth = require('../services/auth');
+const Coins = require('../models/coins')
 // NEXT STEPS 
 // RETURN SAVED COIN DATA WITH PORTFOLIO CALC 
 // 1 - create schema and coin db
@@ -30,11 +30,11 @@ const auth = require('../services/auth');
 // AUTH0
 // need to go in and configure api for Hub Wallet same was as Chuck Norris API
 
-router.get('/coins/:id',
-    auth.authCheck, // restrict this route to logged in users
-    Shows.findAllForUser,
+router.get('/coins',
+    // auth.authCheck, // restrict this route to logged in users
+    Coins.findAllForUser,
     (req, res) => {
-        res.render('shows/profile', { savedShow: res.locals.savedShowData });
+        res.json(res.locals.savedCoinData);
     });
 
 	
