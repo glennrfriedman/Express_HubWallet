@@ -33,10 +33,17 @@ const Coins = require('../models/coins')
 router.get('/coins',
     // auth.authCheck, // restrict this route to logged in users
     Coins.findAllForUser,
-    Coins.getPerformanceData,
+    Coins.getMarketData,
     (req, res) => {
-        res.json({ savedCoins: res.locals.savedCoinData, currentData: res.locals.currentCoinData});
+        res.json({ savedCoins: res.locals.savedCoinData, currentCoinData: res.locals.currentCoinData });
     });
+
+router.post('/save',
+	// auth.authCheck, // restrict this route to logged in users
+		Coins.saveCoin,
+		(req, res) => {
+			res.json({ newCoin: res.locals.newCoinData });
+		});
 
 	
 module.exports = router;
