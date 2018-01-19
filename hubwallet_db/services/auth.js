@@ -1,3 +1,5 @@
+// going to need to reconfigure this file with a const Auth = {} and Auth.authCheck = (req, res, next) => {etc.}
+
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 

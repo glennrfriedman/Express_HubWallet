@@ -11,7 +11,7 @@ const Coins = require('../models/coins')
 // 				 - return current coin information -- DONE
 // 					- calculate portfolio information -- TBD on FRONT END - think its best place to perform
 // 5 - render json of current price information and calculated portfolio information @ /api/coins/:id 
-// SEARCH
+// SEARCH -- THIS IS GOING TO BE TRICK since no search functionality in CMC API -- DONE IN BACK END with params /search/:searchTerm
 // create route for @ coins/search/:searchTerm which will return list of searched coins 
 // POST -- DONE
 // create route for @ coins/coinId which will save coin info (name, id, price, shares, getDateTime)
@@ -19,6 +19,7 @@ const Coins = require('../models/coins')
 // delete a coin from a users account @ /coins/delete
 // EDIT 
 // add an edit route where users can update price, shares or add another lot
+// ADDED - NEED TO ADD .env file with global varaiables along with .gitignore file
 // ADDING AUTH
 // middleware currently - auth.restrict - replace this with example using auth0 in react-authenticaotion-tutorial
 // the Auth.js file in (../services/auth) will use that function instead (partially completed)
@@ -29,6 +30,13 @@ const Coins = require('../models/coins')
 // add utils folder files and configure 
 // AUTH0
 // need to go in and configure api for Hub Wallet same was as Chuck Norris API
+
+router.get('/search/:searchTerm',
+    // auth.authCheck, // restrict this route to logged in users
+    Coins.search,
+    (req, res) => {
+        res.json({ searchResults: res.locals.coinList });
+    });
 
 router.get('/coins',
     // auth.authCheck, // restrict this route to logged in users
