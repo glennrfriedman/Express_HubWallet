@@ -25,6 +25,8 @@ app.use(bodyParser.json());
 
 // 3. connect controller
 app.use('/api', require('./controllers/coins.js'));
+app.use('/users', require('./controllers/users.js'));
+app.use('/login', require('./controllers/sessions.js'));
 
 // 4. listen
 app.listen(PORT, () => console.log('Server is listening on port: ', PORT));

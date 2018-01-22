@@ -11,32 +11,22 @@ const API_URL = 'https://api.coinmarketcap.com/v1/ticker';
 
 const Coins = {};
 
-// Coins.searchTicker = (searchTerm, tickerArray) => {
-// 		res.locals.coinList = [];
-//     for (var i=0; i < tickerArray.length; i++) {
-//         if (tickerArray[i].id === searchTerm) {
-//         		res.locals.coinList.push(tickerArray[i])
-//         }
-//     }
-//     return res.locals.coinList;
-// },
+		Coins.search = (req, res, next) => {
+        const searchTerm = req.params.searchTerm.toLowerCase();
+        axios.get(`${API_URL}`)
+            .then(response => {
+                res.locals.tickerData = response.data
+                let tickerData = res.locals.tickerData
+                // console.log(tickerData)
+                // right now just searching name, not symbol, could add a toggle for that or maybe try to incorporate both searches
+                let searchList = query('id').search(searchTerm).on(tickerData);
+                // console.log(searchList);
+                res.locals.coinList = searchList;
+                next();
+            }).catch(err => console.log('ERROR IN Coins.search:', err))
+    },
 
-Coins.search = (req, res, next) => {
-	const searchTerm = req.params.searchTerm
-	axios.get(`${API_URL}`)
-		.then(response => {
-			res.locals.tickerData = response.data
-			let tickerData = res.locals.tickerData
-			// console.log(tickerData)
-			// right now just searching name, not symbol, could add a toggle for that or maybe try to incorporate both searches
-			let searchList = query('id').search(searchTerm).on(tickerData);
-			// console.log(searchList);
-			res.locals.coinList = searchList;
-			next();
-		}).catch(err => console.log('ERROR IN Coins.search:', err))
-},
-
-Coins.findAllForUser = (req, res, next) => {
+    Coins.findAllForUser = (req, res, next) => {
         // this will need to change to either come from body or params like so 
         // const userId = req.user.id;
         const userId = 1;

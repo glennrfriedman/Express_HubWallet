@@ -1,20 +1,42 @@
-// going to need to reconfigure this file with a const Auth = {} and Auth.authCheck = (req, res, next) => {etc.}
+const bcrypt = require('bcryptjs'),
+      User = require('../models/users');
 
-const jwt = require('express-jwt');
-const jwks = require('jwks-rsa');
+const Auth = {
 
-const authCheck = jwt({
-  secret: jwks.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        // YOUR-AUTH0-DOMAIN name e.g https://prosper.auth0.com
-        jwksUri: "https://hubwallet.auth0.com/.well-known/jwks.json"
-    }),
-    // This is the identifier we set when we created the API
-    audience: 'http://chucknorrisworld.com',
-    issuer: "https://hubwallet.auth0.com/",
-    algorithms: ['RS256']
-});
+  // middleware that will be called on all requests
+  // it will look for a token, look for a user with that token,
+  // and attatch a user object to the request if there is one
+  authenticate: (req, res, next) => {
+    // get the token
+    const token = req.query.auth_token;
+    if(token){ // if there is a token
+      User // find the user with that token
+        .findByToken(token)
+        .then(data => { // if there is a user with that token
+          req.user = data; // set the user in the request
+          next(); // move on to the next action
+        })// if there is no user with that token
+        .catch(err => {
+          req.user = false; // set user to false
+          next() // move on to the next action
+        })
+    } else { // if there is no token
+      req.user = false; // no user
+      next(); // next action
+    }
+  },
 
-module.exports authCheck;
+  // middleware to restrict access to a route
+  // to only requests that have a valid user
+  restrict: (req, res, next) => {
+    if (req.user) { // if there is a user
+      next(); // move on to the next action
+    } else { // if there is no user
+      // send an error back
+      res.status(401).json({error: 'user not authorized'});
+    }
+  },
+
+}
+
+module.exports = Auth;
