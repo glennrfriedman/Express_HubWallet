@@ -38,7 +38,7 @@ router.get('/search/:searchTerm',
         res.json({ searchResults: res.locals.coinList });
     });
 
-router.get('/coins',
+router.get('/:id/coins',
     // auth.authCheck, // restrict this route to logged in users
     Coins.findAllForUser,
     Coins.getMarketData,

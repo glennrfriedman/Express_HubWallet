@@ -11,9 +11,9 @@ const API_URL = 'https://api.coinmarketcap.com/v1/ticker';
 
 const Coins = {};
 
-		Coins.search = (req, res, next) => {
+	Coins.search = (req, res, next) => {
         const searchTerm = req.params.searchTerm.toLowerCase();
-        axios.get(`${API_URL}`)
+        axios.get(`${API_URL}/?limit=0`)
             .then(response => {
                 res.locals.tickerData = response.data
                 let tickerData = res.locals.tickerData
@@ -29,19 +29,11 @@ const Coins = {};
     Coins.findAllForUser = (req, res, next) => {
         // this will need to change to either come from body or params like so 
         // const userId = req.user.id;
-        const userId = 1;
+        const userId = req.params.id;
         db.manyOrNone(
             'SELECT * FROM coins WHERE user_id = $1', [userId]
         ).then(data => {
-            // THINK PPS and OTHER CALCS WILL ALL HAPPEN IN THE FRONT END - PERFORMANCE ISSUES? JUST SIMPLE MATH
-            // console.log(data);
-            // res.locals.coinPerformance = [];
             res.locals.savedCoinData = data;
-            // data.forEach(function(coin){
-            // 	let coinPerformanceCalc = coin.investment/coin.shares
-            // 	res.locals.coinPerformance.push({ pricePerShare: coinPerformanceCalc  })
-            // })
-            console.log(res.locals.coinPerformance);
             next();
         }).catch(err => console.log('ERROR IN Coins.findAll:', err))
     },

@@ -23,6 +23,6 @@ CREATE TABLE coins (
 );
 
 -- seeding dummy data
-INSERT INTO users (id, first_name, last_name, email, password_digest, token) VALUES (1, 'glenn', 'friedman', 'glenn@glenn.com', 'gmoney92', 1234);
-INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'EOS', 'eos', 358.28, 31.27, '01/01/2018');
-INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'Bitcoin', 'bitcoin', 10000, 31.27, '01/01/2018');
+-- INSERT INTO users (id, first_name, last_name, email, password_digest, token) VALUES (1, 'glenn', 'friedman', 'glenn@glenn.com', 'gmoney92', 1234);
+-- INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'EOS', 'eos', 358.28, 31.27, '01/01/2018');
+-- psqINSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES (1, 'Bitcoin', 'bitcoin', 10000, 31.27, '01/01/2018');
