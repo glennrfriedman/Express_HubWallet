@@ -11,6 +11,13 @@ const API_URL = 'https://api.coinmarketcap.com/v1/ticker';
 
 const Coins = {};
 
+    // edit middleware 
+    // need to have 2 edit routes 
+    // 1 - Edit route where users can edit investment information porovided 
+    // 2 - Edit route where I can insert new coin data from api into the database for each coin 
+    //      - this way when I make call from front-end savedCoin data will return the live information as well 
+    //      - much easier to present information and do calc if all coin data in same object - avoid trying to implement something like MongoDb
+
 	Coins.search = (req, res, next) => {
         const searchTerm = req.params.searchTerm.toLowerCase();
         axios.get(`${API_URL}/?limit=0`)
@@ -39,10 +46,12 @@ const Coins = {};
     },
 
     Coins.getMarketData = (req, res, next) => {
+        const userId = req.params.id;
         // this will need to be axios.all call
         // create a promise for each coin a user has saved 
         // make call to return data for all of those promises 
         let coinCalls = [];
+        let currentSavedCoinData = [];
         const savedCoins = res.locals.savedCoinData;
         savedCoins.forEach(function(coin) {
             coinCalls.push(axios(`${API_URL}/${coin.coin_id}`));
@@ -50,10 +59,34 @@ const Coins = {};
 
         axios.all(coinCalls)
             .then(response => {
-                res.locals.currentCoinData = [];
+                // OLD LOGIC - returrning new key value with current coin data
+                let currentCoinData = [];
                 // console.log('response from axios.all is', response)
                 response.forEach(function(response) {
-                    res.locals.currentCoinData.push(response.data);
+                    currentCoinData.push(response.data);
+                })
+                currentCoinData.forEach(function(response) {
+                console.log('response from currentCoinData is ', response[0]);
+                let { price_usd, price_btc, market_cap_usd, percent_change_1h, percent_change_24h, percent_change_7d } = response[0];
+                        // res.locals.savedCoinData[i].price_usd = 0;
+                        // console.log('response in for loop is ', response.data[0].price_usd);
+                console.log('length of res.locals.savedCoinData is', res.locals.savedCoinData.length);
+                for(var i = 0; i < res.locals.savedCoinData.length; i++){
+                    // console.log('coin id from res.locals is', res.locals.savedCoinData[i].coin_id);
+                    // console.log('coin id from response is', response[0].id);
+                    if (res.locals.savedCoinData[i].coin_id === response[0].id){
+                            res.locals.savedCoinData[i].price_usd = price_usd;
+                            res.locals.savedCoinData[i].price_btc = price_btc;
+                            res.locals.savedCoinData[i].market_cap_usd = market_cap_usd;
+                            res.locals.savedCoinData[i].percent_change_1h = percent_change_1h;
+                            res.locals.savedCoinData[i].percent_change_24h = percent_change_24h;
+                            res.locals.savedCoinData[i].percent_change_7d = percent_change_7d;
+                            res.locals.savedCoinData[i].price_per_share_change = price_usd - res.locals.savedCoinData[i].price_per_share;
+                            res.locals.savedCoinData[i].net_present_value = price_usd * res.locals.savedCoinData[i].shares;
+                            res.locals.savedCoinData[i].return_on_investment_dollars = res.locals.savedCoinData[i].net_present_value - res.locals.savedCoinData[i].investment;
+                            res.locals.savedCoinData[i].return_on_investment_percent = res.locals.savedCoinData[i].return_on_investment_dollars / res.locals.savedCoinData[i].investment;
+                        }    
+                    }
                 })
                 next();
             })
@@ -66,9 +99,12 @@ const Coins = {};
             coin_id = req.body.coin_id,
             investment = req.body.investment,
             shares = req.body.shares,
+            symbol = req.body.symbol,
             date_of_transaction = req.body.date_of_transaction;
 
-        db.one('INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, date_of_transaction) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [user_id, coin_name, coin_id, investment, shares, date_of_transaction])
+        const price_per_share = investment/shares;
+            
+        db.one('INSERT INTO coins (user_id, coin_name, coin_id, investment, shares, price_per_share, symbol, date_of_transaction) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [user_id, coin_name, coin_id, investment, shares, price_per_share, symbol, date_of_transaction])
             .then(newCoinData => {
                 res.locals.newCoinData = newCoinData;
                 next();
