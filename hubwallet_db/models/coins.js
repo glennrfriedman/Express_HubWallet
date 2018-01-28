@@ -92,6 +92,17 @@ const Coins = {};
             })
     },
 
+    Coins.portfolioData = (req, res, next) => {
+        res.locals.portfolio = { total_investment: 0, total_npv: 0, total_roi_dollars: 0, total_roi_percent: 0 }
+        res.locals.savedCoinData.forEach(function(coin) {
+            res.locals.portfolio.total_investment = res.locals.portfolio.total_investment + coin.investment;
+            res.locals.portfolio.total_npv = res.locals.portfolio.total_npv + coin.net_present_value;
+            res.locals.portfolio.total_roi_dollars = res.locals.portfolio.total_roi_dollars + coin.return_on_investment_dollars;
+            res.locals.portfolio.total_roi_percent = res.locals.portfolio.total_roi_dollars / res.locals.portfolio.total_investment;
+        })
+        next();
+    },
+
     Coins.saveCoin = (req, res, next) => {
         // need to change to req.user.id once implemented in React
         const user_id = req.body.user_id,

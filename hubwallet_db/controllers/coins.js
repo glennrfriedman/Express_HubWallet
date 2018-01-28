@@ -38,12 +38,13 @@ router.get('/search/:searchTerm',
         res.json({ searchResults: res.locals.coinList });
     });
 
-router.post('/:id/coins',
+router.get('/:id/coins',
     // auth.authCheck, // restrict this route to logged in users
     Coins.findAllForUser,
     Coins.getMarketData,
+    Coins.portfolioData,
     (req, res) => {
-        res.json({ savedCoinData: res.locals.savedCoinData });
+        res.json({ savedCoinData: res.locals.savedCoinData, portfolio: res.locals.portfolio });
     });
 
 router.post('/save',
